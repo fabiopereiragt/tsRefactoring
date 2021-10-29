@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+ <!-- COMMANDS -->
+   <extension
+         point="org.eclipse.ui.commands">
+         
+      <category
+            id="com.plugin.tsrefactoring.commands.category"
+            name="Sample Category">
+      </category>
+      
+      <command
+            categoryId="com.plugin.tsrefactoring.commands.category"
+            name="Constructor Initialization"
+            id="com.plugin.tsrefactoring.commands.constructorInitialization">
+      </command>
+      
+       <command
+            categoryId="com.plugin.tsrefactoring.commands.category"
+            name="Ignored Test"
+            id="com.plugin.tsrefactoring.commands.ignoredTest">
+      </command>
+      
+        <command
+            categoryId="com.plugin.tsrefactoring.commands.category"
+            name="Empty Test"
+            id="com.plugin.tsrefactoring.commands.emptyTest">
+      </command>
+      
+        <command
+            categoryId="com.plugin.tsrefactoring.commands.category"
+            name="Redundant Print"
+            id="com.plugin.tsrefactoring.commands.redundantPrint">
+      </command>
+      
+   </extension>
+    
+   <!-- END COMMANDS -->
+   
+   <!-- HANDLERS -->
+   <extension
+         point="org.eclipse.ui.handlers">
+         
+      <handler
+            class="org.ufla.tsrefactoring.handlers.ConstructorInitialization"
+            commandId="com.plugin.tsrefactoring.commands.constructorInitialization">
+      </handler>
+      
+      <handler
+            class="org.ufla.tsrefactoring.handlers.IgnoredTest"
+            commandId="com.plugin.tsrefactoring.commands.ignoredTest">
+      </handler>
+      
+      <handler
+            class="org.ufla.tsrefactoring.handlers.EmptyTest"
+            commandId="com.plugin.tsrefactoring.commands.emptyTest">
+      </handler>
+      
+      <handler
+            class="org.ufla.tsrefactoring.handlers.RedundantPrint"
+            commandId="com.plugin.tsrefactoring.commands.redundantPrint">
+      </handler>
+      
+   </extension>   
+   <!-- END HANDLERS -->
+   
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.plugin.tsrefactoring.commands.constructorInitialization"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   
+    <!-- MENU -->
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">            
+            
+         <menu
+               id="com.plugin.tsrefactoring.menus.mainMenu"
+               label="TS Refactoring">
+            <command
+                  commandId="com.plugin.tsrefactoring.commands.constructorInitialization"
+                  id="com.plugin.tsrefactoring.menus.constructorInitialization"
+                  mnemonic="S">
+            </command>
+         </menu>         
+         
+          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
+            <command
+                  commandId="com.plugin.tsrefactoring.commands.ignoredTest"
+                  id="com.plugin.tsrefactoring.menus.ignoredTest">
+            </command>
+         </menu>         
+         
+          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
+            <command
+                  commandId="com.plugin.tsrefactoring.commands.emptyTest"
+                  id="com.plugin.tsrefactoring.menus.emptyTest">
+            </command>
+          </menu>
+         
+          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
+            <command
+                  commandId="com.plugin.tsrefactoring.commands.redundantPrint"
+                  id="com.plugin.tsrefactoring.menus.redundantPrint">
+            </command>
+         </menu>
+                  
+      </menuContribution>        
+         
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+   </extension>
+   
+   <!-- END MENU -->
+
+</plugin>
