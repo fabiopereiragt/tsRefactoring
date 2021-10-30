@@ -2,124 +2,97 @@
 <?eclipse version="3.4"?>
 <plugin>
 
- <!-- COMMANDS -->
-   <extension
-         point="org.eclipse.ui.commands">
-         
-      <category
-            id="com.plugin.tsrefactoring.commands.category"
-            name="Sample Category">
-      </category>
-      
-      <command
-            categoryId="com.plugin.tsrefactoring.commands.category"
-            name="Constructor Initialization"
-            id="com.plugin.tsrefactoring.commands.constructorInitialization">
-      </command>
-      
-       <command
-            categoryId="com.plugin.tsrefactoring.commands.category"
-            name="Ignored Test"
-            id="com.plugin.tsrefactoring.commands.ignoredTest">
-      </command>
-      
-        <command
-            categoryId="com.plugin.tsrefactoring.commands.category"
-            name="Empty Test"
-            id="com.plugin.tsrefactoring.commands.emptyTest">
-      </command>
-      
-        <command
-            categoryId="com.plugin.tsrefactoring.commands.category"
-            name="Redundant Print"
-            id="com.plugin.tsrefactoring.commands.redundantPrint">
-      </command>
-      
-   </extension>
-    
-   <!-- END COMMANDS -->
-   
-   <!-- HANDLERS -->
-   <extension
-         point="org.eclipse.ui.handlers">
-         
-      <handler
-            class="org.ufla.tsrefactoring.handlers.ConstructorInitialization"
-            commandId="com.plugin.tsrefactoring.commands.constructorInitialization">
-      </handler>
-      
-      <handler
-            class="org.ufla.tsrefactoring.handlers.IgnoredTest"
-            commandId="com.plugin.tsrefactoring.commands.ignoredTest">
-      </handler>
-      
-      <handler
-            class="org.ufla.tsrefactoring.handlers.EmptyTest"
-            commandId="com.plugin.tsrefactoring.commands.emptyTest">
-      </handler>
-      
-      <handler
-            class="org.ufla.tsrefactoring.handlers.RedundantPrint"
-            commandId="com.plugin.tsrefactoring.commands.redundantPrint">
-      </handler>
-      
-   </extension>   
-   <!-- END HANDLERS -->
-   
-   <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="com.plugin.tsrefactoring.commands.constructorInitialization"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.eclipse.ui.contexts.window"
-            sequence="M1+6">
-      </key>
-   </extension>
-   
-    <!-- MENU -->
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">            
-            
+ <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="TestSmells"
+            visible="true"
+            id="org.ufla.tsrefactoring.TestSmells">
          <menu
-               id="com.plugin.tsrefactoring.menus.mainMenu"
-               label="TS Refactoring">
-            <command
-                  commandId="com.plugin.tsrefactoring.commands.constructorInitialization"
-                  id="com.plugin.tsrefactoring.menus.constructorInitialization"
-                  mnemonic="S">
-            </command>
-         </menu>         
-         
-          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
-            <command
-                  commandId="com.plugin.tsrefactoring.commands.ignoredTest"
-                  id="com.plugin.tsrefactoring.menus.ignoredTest">
-            </command>
-         </menu>         
-         
-          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
-            <command
-                  commandId="com.plugin.tsrefactoring.commands.emptyTest"
-                  id="com.plugin.tsrefactoring.menus.emptyTest">
-            </command>
-          </menu>
-         
-          <menu id="com.plugin.tsrefactoring.menus.mainMenu">
-            <command
-                  commandId="com.plugin.tsrefactoring.commands.redundantPrint"
-                  id="com.plugin.tsrefactoring.menus.redundantPrint">
-            </command>
+               label="Test Smells"
+               id="BadSmellsMenu">
+            <separator
+                  name="sampleGroup">
+            </separator>
          </menu>
-                  
-      </menuContribution>        
-         
+         <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_red.png"
+               id="ConstructorInitialization"              
+               label="Constructor Initialization"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Constructor Initialization">
+         </action>
+         <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_green.png"
+               id="IgnoredTest"
+               label="Ignored Test"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Ignored Test">
+         </action>
+            <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_yellow.png"
+               id="EmptyTest"
+               label="Empty Test"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Empty Test">
+         </action>
+            <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_blue.png"
+               id="RedundantPrint"
+               label="Redundant Print"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Redundant Print">
+         </action>         
+      </actionSet>      
    </extension>
+   
    <extension
          point="org.eclipse.ui.views">
+      <category
+            name="Test Smells"
+            id="org.ufla.tsrefactoring">
+      </category>
+      <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.ConstructorInitializationView"
+            icon="icons/bug_red.png"
+            id="org.ufla.tsrefactoring.views.ConstructorInitializationView"
+            name="Constructor Initialization"
+            inject="true">
+      </view>
+          <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.IgnoredTestView"
+            icon="icons/bug_green.png"
+            id="org.ufla.tsrefactoring.views.IgnoredTestView"
+            name="Ignored Test"
+            inject="true">
+      </view>
+          <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.EmptyTestView"
+            icon="icons/bug_yellow.png"
+            id="org.ufla.tsrefactoring.views.EmptyTestView"
+            name="Empty Test"
+            inject="true">
+      </view>
+          <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.RedundantPrintView"
+            icon="icons/bug_blue.png"
+            id="org.ufla.tsrefactoring.views.RedundantPrintView"
+            name="RedundantPrint"
+            inject="true">
+      </view>
+     
    </extension>
-   
-   <!-- END MENU -->
-
+ 
 </plugin>

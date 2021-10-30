@@ -31,12 +31,12 @@ import javax.inject.Inject;
  * <p>
  */
 
-public class ConstructorInitialization extends ViewPart {
+public class IgnoredTestView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.ufla.tsrefactoring.views.ConstructorInitialization";
+	public static final String ID = "org.ufla.tsrefactoring.views.IgnoredTestView";
 
 	@Inject IWorkbench workbench;
 	
@@ -83,7 +83,7 @@ public class ConstructorInitialization extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				ConstructorInitialization.this.fillContextMenu(manager);
+				IgnoredTestView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
