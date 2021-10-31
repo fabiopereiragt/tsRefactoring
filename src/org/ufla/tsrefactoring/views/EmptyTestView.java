@@ -47,6 +47,7 @@ public class EmptyTestView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	List<ClassData> filesAnalyzed = Analyzer.getFilesAnalyzed();
 
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 		@Override
@@ -67,24 +68,24 @@ public class EmptyTestView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		List<ClassData> filesAnalyzed = Analyzer.getFilesAnalyzed();
 		
-		
-		//extrai apenas os atributos pacotes da lista de classes
-		List<String> packages = filesAnalyzed.stream()
-				.map(ClassData::getPackageName)
+
+		// extrai apenas os atributos pacotes da lista de classes
+		List<String> packages = filesAnalyzed
+				.stream()
+				.map(ClassData::getClassName)
 				.collect(Collectors.toList());
-		
+
+		String keys[] = new String[packages.size()];
+		for (int i = 0; i < keys.length; i++) {
+			keys[i] = packages.get(i);
+		}
+
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
-		// viewer.setInput(new String[] { "One", "Two", "Three" });
-	  	String keys[] = new String[packages.size()];
-		for(int i = 0; i < keys.length; i++) {
-			keys[i] = packages.get(i);
-		} 
-		
-		viewer.setInput(keys); 
+		// viewer.setInput(new String[] { "One", "Two", "Three" });		
+		viewer.setInput(keys);
 		viewer.setLabelProvider(new ViewLabelProvider());
 
 		// Create the help context id for the viewer's control
@@ -177,4 +178,11 @@ public class EmptyTestView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+
+	//Ao fechar a tab
+	@Override
+	public void dispose() {
+		filesAnalyzed.clear();
+	}	
+	
 }

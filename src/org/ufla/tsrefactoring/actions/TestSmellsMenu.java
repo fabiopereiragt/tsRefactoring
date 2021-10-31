@@ -35,7 +35,7 @@ public class TestSmellsMenu implements IWorkbenchWindowActionDelegate {
 		IWorkbenchPage page = window.getActivePage();
 		try {
 			if (action.getId().equals("ConstructorInitialization")) {
-				page.showView("org.ufla.tsrefactoring.views.ConstructorInitialization");
+				page.showView("org.ufla.tsrefactoring.views.ConstructorInitializationView");
 			} else if (action.getId().equals("IgnoredTest")) {
 				page.showView("org.ufla.tsrefactoring.views.IgnoredTestView");
 			} else if (action.getId().equals("EmptyTest")) {
