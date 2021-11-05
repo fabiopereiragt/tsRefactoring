@@ -8,7 +8,7 @@ import org.ufla.tsrefactoring.dto.ClassData;
 
 public class Analyzer {
 	private static List<ClassData> classData = new ArrayList<ClassData>();
-	private static final String[] FILE_PATH = { "/home/fabio/eclipse-workspace/junittesting/src/com/javatpoint/testcase" };
+	private static final String[] FILE_PATH = { "D:\\dev\\java\\java-junit-sample-master" };
 
 	private static List<ClassData> getFiles(){
 		for(String path : FILE_PATH) {

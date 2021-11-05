@@ -11,6 +11,7 @@ import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.SWT;
 
 import java.util.List;
@@ -57,12 +58,13 @@ public class EmptyTestView extends ViewPart {
 
 		@Override
 		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
+			Image image = null;
+			return image;
 		}
 
 		@Override
 		public Image getImage(Object obj) {
-			return workbench.getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+			return null;
 		}
 	}
 
@@ -81,15 +83,38 @@ public class EmptyTestView extends ViewPart {
 			keys[i] = packages.get(i);
 		}
 
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		// define the TableViewer
+		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		// viewer.setInput(new String[] { "One", "Two", "Three" });		
 		viewer.setInput(keys);
 		viewer.setLabelProvider(new ViewLabelProvider());
+		
+		TableLayout layout = new TableLayout();
+		layout.addColumnData(new ColumnWeightData(15, true));
+		layout.addColumnData(new ColumnWeightData(25, true));
+		layout.addColumnData(new ColumnWeightData(8, true));
+		
+		viewer.getTable().setLayout(layout);
+		viewer.getTable().setLinesVisible(true);
+		viewer.getTable().setHeaderVisible(true);
+		
+		TableColumn column0 = new TableColumn(viewer.getTable(),SWT.LEFT);
+		column0.setText("Test Smell");
+		column0.setResizable(true);
+		column0.pack();
+		TableColumn column1 = new TableColumn(viewer.getTable(),SWT.LEFT);
+		column1.setText("Source Method");
+		column1.setResizable(true);
+		column1.pack();
+		TableColumn column2 = new TableColumn(viewer.getTable(),SWT.LEFT);
+		column2.setText("Line");
+		column2.setResizable(true);
+		column2.pack();
 
 		// Create the help context id for the viewer's control
-		workbench.getHelpSystem().setHelp(viewer.getControl(), "br.com.plugin.view.viewer");
+		//workbench.getHelpSystem().setHelp(viewer.getControl(), "br.com.plugin.view.viewer");
 		getSite().setSelectionProvider(viewer);
 		makeActions();
 		hookContextMenu();
