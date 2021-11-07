@@ -13,9 +13,9 @@ public class Analyzer {
 	private static List<ResultTestSmellDTO> getFiles(TestSmell testSmell) {
 		for (String path : FILE_PATH) {
 
-			EmptyTestParser.listClasses(new File(path), testSmell);
+			Parser.listClasses(new File(path), testSmell);
 
-			EmptyTestParser.getAllClassData().forEach(allClass -> {
+			Parser.getAllClassData().forEach(allClass -> {
 				// iterate over a map using for
 				for (var pair : allClass.getSourceMethod().entrySet()) {
 					// System.out.println(pair.getKey()); System.out.println(pair.getValue());
@@ -26,7 +26,7 @@ public class Analyzer {
 									allClass.getFilePath()));
 				}
 			});
-			EmptyTestParser.getAllClassData().clear();
+			Parser.getAllClassData().clear();
 		}
 		return resultEmptyTest;
 	}

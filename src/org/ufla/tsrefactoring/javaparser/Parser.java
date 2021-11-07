@@ -12,7 +12,7 @@ import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.javaparser.visitor.EmptyTestVisitor;
 import org.ufla.tsrefactoring.util.DirExplorer;
 
-public class EmptyTestParser {
+public class Parser {
 	
 	private static List<ClassDataDTO> allClassData = new ArrayList<ClassDataDTO>();
 	
