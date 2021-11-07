@@ -1,23 +1,32 @@
 package org.ufla.tsrefactoring.views;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.ufla.tsrefactoring.dto.ClassData;
-import org.ufla.tsrefactoring.javaparser.Analyzer;
-
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.SWT;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.provider.EmptyTestProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -48,73 +57,56 @@ public class EmptyTestView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	List<ClassData> filesAnalyzed = Analyzer.getFilesAnalyzed();
-
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-		@Override
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
-		}
-
-		@Override
-		public Image getColumnImage(Object obj, int index) {
-			Image image = null;
-			return image;
-		}
-
-		@Override
-		public Image getImage(Object obj) {
-			return null;
-		}
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 		
-
-		// extrai apenas os atributos pacotes da lista de classes
-		List<String> packages = filesAnalyzed
-				.stream()
-				.map(ClassData::getClassName)
-				.collect(Collectors.toList());
-
-		String keys[] = new String[packages.size()];
-		for (int i = 0; i < keys.length; i++) {
-			keys[i] = packages.get(i);
-		}
-
 		// define the TableViewer
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.FULL_SELECTION);
+		
+		viewer.setContentProvider(new EmptyTestProvider());
 
-		viewer.setContentProvider(ArrayContentProvider.getInstance());
-		// viewer.setInput(new String[] { "One", "Two", "Three" });		
-		viewer.setInput(keys);
-		viewer.setLabelProvider(new ViewLabelProvider());
+		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
+		colTestSmell.getColumn().setWidth(200);
+		colTestSmell.getColumn().setText("Source Method");
+		colTestSmell.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) element;
+				return rs.getMethodName();
+			}
+		});
+
+		TableViewerColumn colSourceMethod = new TableViewerColumn(viewer, SWT.NONE);
+		colSourceMethod.getColumn().setWidth(50);
+		colSourceMethod.getColumn().setText("Line");
+		colSourceMethod.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) element;
+				return Integer.toString(rs.getLineNumber());
+			}
+		});
+
+		TableViewerColumn colLine = new TableViewerColumn(viewer, SWT.NONE);
+		colLine.getColumn().setWidth(300);
+		colLine.getColumn().setText("File Path");
+		colLine.setLabelProvider(new ColumnLabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) element;
+				return rs.getFilePath();
+			}
+		}); 
 		
-		TableLayout layout = new TableLayout();
-		layout.addColumnData(new ColumnWeightData(15, true));
-		layout.addColumnData(new ColumnWeightData(25, true));
-		layout.addColumnData(new ColumnWeightData(8, true));
-		
-		viewer.getTable().setLayout(layout);
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);
-		
-		TableColumn column0 = new TableColumn(viewer.getTable(),SWT.LEFT);
-		column0.setText("Test Smell");
-		column0.setResizable(true);
-		column0.pack();
-		TableColumn column1 = new TableColumn(viewer.getTable(),SWT.LEFT);
-		column1.setText("Source Method");
-		column1.setResizable(true);
-		column1.pack();
-		TableColumn column2 = new TableColumn(viewer.getTable(),SWT.LEFT);
-		column2.setText("Line");
-		column2.setResizable(true);
-		column2.pack();
+		viewer.setInput(getViewSite());
 
-		// Create the help context id for the viewer's control
-		//workbench.getHelpSystem().setHelp(viewer.getControl(), "br.com.plugin.view.viewer");
 		getSite().setSelectionProvider(viewer);
 		makeActions();
 		hookContextMenu();
@@ -204,10 +196,10 @@ public class EmptyTestView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	//Ao fechar a tab
+	// Ao fechar a tab
 	@Override
 	public void dispose() {
-		filesAnalyzed.clear();
-	}	
-	
+		// filesAnalyzed.clear();
+	}
+
 }

@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ufla.tsrefactoring.dto.ClassData;
+import org.ufla.tsrefactoring.dto.ClassDataDTO;
 import org.ufla.tsrefactoring.util.DirExplorer;
 
 public class Parser {
 	
-	private static List<ClassData> allClassData = new ArrayList<ClassData>();
+	private static List<ClassDataDTO> allClassData = new ArrayList<ClassDataDTO>();
 	
 	public static void listClasses(File projectDir) {
 		
@@ -21,12 +21,11 @@ public class Parser {
 			(level, path, file) -> {
 				try {
 					CompilationUnit cu = StaticJavaParser.parse(file);
-					Visitor v = new Visitor();
+					VisitorEmptyTest v = new VisitorEmptyTest();
 					v.visit(cu, null);
-					ClassData classData = new ClassData(
-							v.getNameClass(), 
-							v.getPackageName(),
-							v.getFields());
+					ClassDataDTO classData = new ClassDataDTO(
+							v.getMethods(),
+							path);
 					insert(classData);
 				} catch (IOException e) {
 					new RuntimeException(e);
@@ -34,11 +33,11 @@ public class Parser {
 			}).explore(projectDir);
 		}
 	
-	private static void insert(ClassData cl) {
+	private static void insert(ClassDataDTO cl) {
 		allClassData.add(cl);
 	}
 	
-	public static List<ClassData> getAllClassData() {
+	public static List<ClassDataDTO> getAllClassData() {
 		return allClassData;
 	}
 	

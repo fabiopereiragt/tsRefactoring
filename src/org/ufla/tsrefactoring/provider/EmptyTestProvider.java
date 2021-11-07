@@ -1,15 +1,34 @@
 package org.ufla.tsrefactoring.provider;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import java.util.ArrayList;
+import java.util.List;
 
-public class EmptyTestProvider implements IStructuredContentProvider{
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.javaparser.Analyzer;
+import org.eclipse.jface.viewers.Viewer;
+
+public class EmptyTestProvider implements IStructuredContentProvider {
+
+	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
-	public EmptyTestProvider() {}
+	
+
+	public EmptyTestProvider() {
+		resultTestSmellDTO = Analyzer.getFilesAnalyzed();
+	}
 
 	@Override
 	public Object[] getElements(Object arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return resultTestSmellDTO.toArray();
+	}
+
+	@Override
+	public void dispose() {
+	}
+
+	@Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 
 }
