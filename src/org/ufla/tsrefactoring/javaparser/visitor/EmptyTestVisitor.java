@@ -1,4 +1,4 @@
-package org.ufla.tsrefactoring.javaparser;
+package org.ufla.tsrefactoring.javaparser.visitor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-public class VisitorEmptyTest extends VoidVisitorAdapter<Void> {
+public class EmptyTestVisitor extends VoidVisitorAdapter<Void> {
 
 	private Map<String, Integer> methods = new HashMap<String, Integer>();
 

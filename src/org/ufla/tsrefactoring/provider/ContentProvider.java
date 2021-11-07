@@ -5,17 +5,17 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.javaparser.Analyzer;
 import org.eclipse.jface.viewers.Viewer;
 
-public class EmptyTestProvider implements IStructuredContentProvider {
+public class ContentProvider implements IStructuredContentProvider {
 
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
-	
-
-	public EmptyTestProvider() {
-		resultTestSmellDTO = Analyzer.getFilesAnalyzed();
+	public ContentProvider() {
+		resultTestSmellDTO.clear();
+		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.EMPTY_TEST);
 	}
 
 	@Override

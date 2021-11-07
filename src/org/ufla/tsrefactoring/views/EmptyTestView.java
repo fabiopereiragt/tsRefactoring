@@ -26,7 +26,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
-import org.ufla.tsrefactoring.provider.EmptyTestProvider;
+import org.ufla.tsrefactoring.provider.ContentProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -65,8 +65,12 @@ public class EmptyTestView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION);
 		
-		viewer.setContentProvider(new EmptyTestProvider());
+		viewer.setContentProvider(new ContentProvider());
+		
+		/*ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
+		columnsLabels.createColumns(viewer);*/
 
+		
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
 		colTestSmell.getColumn().setText("Source Method");
@@ -101,7 +105,7 @@ public class EmptyTestView extends ViewPart {
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) element;
 				return rs.getFilePath();
 			}
-		}); 
+		});  
 		
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);

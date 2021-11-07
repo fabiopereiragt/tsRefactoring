@@ -4,34 +4,35 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.enums.TestSmell;
 
 public class Analyzer {
-	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
+	private static List<ResultTestSmellDTO> resultEmptyTest = new ArrayList<ResultTestSmellDTO>();
 	private static final String[] FILE_PATH = { "/home/fabio/eclipse-workspace/junittesting/src" };
 
-	private static List<ResultTestSmellDTO> getFiles() {
+	private static List<ResultTestSmellDTO> getFiles(TestSmell testSmell) {
 		for (String path : FILE_PATH) {
 
-			Parser.listClasses(new File(path));
+			EmptyTestParser.listClasses(new File(path), testSmell);
 
-			Parser.getAllClassData().forEach(allClass -> {
+			EmptyTestParser.getAllClassData().forEach(allClass -> {
 				// iterate over a map using for
 				for (var pair : allClass.getSourceMethod().entrySet()) {
 					// System.out.println(pair.getKey()); System.out.println(pair.getValue());
-					resultTestSmellDTO
+					resultEmptyTest
 							.add(new ResultTestSmellDTO(
 									pair.getKey(), 
 									pair.getValue(), 
 									allClass.getFilePath()));
 				}
 			});
-			Parser.getAllClassData().clear();
+			EmptyTestParser.getAllClassData().clear();
 		}
-		return resultTestSmellDTO;
+		return resultEmptyTest;
 	}
 
-	public static List<ResultTestSmellDTO> getFilesAnalyzed() {
-		return getFiles();
+	public static List<ResultTestSmellDTO> getFilesAnalyzed(TestSmell testSmell) {
+		return getFiles(testSmell);
 	}
 
 }
