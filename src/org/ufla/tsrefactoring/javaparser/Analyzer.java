@@ -8,7 +8,7 @@ import org.ufla.tsrefactoring.enums.TestSmell;
 
 public class Analyzer {
 	private static List<ResultTestSmellDTO> resultEmptyTest = new ArrayList<ResultTestSmellDTO>();
-	private static final String[] FILE_PATH = { "/home/fabio/eclipse-workspace/junittesting/src" };
+	private static final String[] FILE_PATH = { "D:\\dev\\java\\java-junit-sample-master\\src\\test\\java" };
 
 	private static List<ResultTestSmellDTO> getFiles(TestSmell testSmell) {
 		for (String path : FILE_PATH) {
