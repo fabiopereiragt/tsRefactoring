@@ -26,7 +26,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
-import org.ufla.tsrefactoring.provider.ContentProvider;
+import org.ufla.tsrefactoring.provider.EmptyTestProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -65,7 +65,7 @@ public class EmptyTestView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION);
 		
-		viewer.setContentProvider(new ContentProvider());
+		viewer.setContentProvider(new EmptyTestProvider());
 		
 		/*ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
 		columnsLabels.createColumns(viewer);*/

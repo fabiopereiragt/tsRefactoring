@@ -9,11 +9,11 @@ import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.javaparser.Analyzer;
 import org.eclipse.jface.viewers.Viewer;
 
-public class ContentProvider implements IStructuredContentProvider {
+public class EmptyTestProvider implements IStructuredContentProvider {
 
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
-	public ContentProvider() {
+	public EmptyTestProvider() {
 		resultTestSmellDTO.clear();
 		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.EMPTY_TEST);
 	}

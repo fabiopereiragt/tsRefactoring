@@ -14,7 +14,6 @@ public class EmptyTestVisitor extends VoidVisitorAdapter<Void> {
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
-		System.out.println(Util.isValidTestMethod(n));
 	    if (Util.isValidTestMethod(n)) { 			
 			if (!n.isAbstract()) {
 				if (n.getBody().isPresent()) {
