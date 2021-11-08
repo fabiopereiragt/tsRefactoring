@@ -9,8 +9,10 @@ import java.util.List;
 
 import org.ufla.tsrefactoring.dto.ClassDataDTO;
 import org.ufla.tsrefactoring.enums.TestSmell;
+import org.ufla.tsrefactoring.javaparser.visitor.ConstructorInitializationVisitor;
 import org.ufla.tsrefactoring.javaparser.visitor.EmptyTestVisitor;
 import org.ufla.tsrefactoring.javaparser.visitor.IgnoredTestVisitor;
+import org.ufla.tsrefactoring.javaparser.visitor.RedundantPrintVisitor;
 import org.ufla.tsrefactoring.util.DirExplorer;
 
 public class Parser {
@@ -29,6 +31,16 @@ public class Parser {
 					insert(classData);
 				} else if (testSmell == TestSmell.IGNORED_TEST) {
 					IgnoredTestVisitor v = new IgnoredTestVisitor();
+					v.visit(cu, null);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					insert(classData);
+				} else if (testSmell == TestSmell.REDUNDANT_PRINT) {
+					RedundantPrintVisitor v = new RedundantPrintVisitor();
+					v.visit(cu, null);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					insert(classData);
+				} else {
+					ConstructorInitializationVisitor v = new ConstructorInitializationVisitor();
 					v.visit(cu, null);
 					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
 					insert(classData);
