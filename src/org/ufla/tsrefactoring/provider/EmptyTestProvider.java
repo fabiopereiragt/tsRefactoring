@@ -14,7 +14,6 @@ public class EmptyTestProvider implements IStructuredContentProvider {
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
 	public EmptyTestProvider() {
-		resultTestSmellDTO.clear();
 		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.EMPTY_TEST);
 	}
 
@@ -25,6 +24,7 @@ public class EmptyTestProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
+		resultTestSmellDTO.clear();
 	}
 
 	@Override

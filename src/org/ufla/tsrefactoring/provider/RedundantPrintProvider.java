@@ -14,7 +14,6 @@ public class RedundantPrintProvider implements IStructuredContentProvider {
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
 	public RedundantPrintProvider() {
-		resultTestSmellDTO.clear();
 		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.REDUNDANT_PRINT);
 	}
 
@@ -25,6 +24,7 @@ public class RedundantPrintProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
+		resultTestSmellDTO.clear();
 	}
 
 	@Override

@@ -14,7 +14,6 @@ public class IgnoredTestProvider implements IStructuredContentProvider {
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
 	public IgnoredTestProvider() {
-		resultTestSmellDTO.clear();
 		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.IGNORED_TEST);
 	}
 
@@ -25,6 +24,7 @@ public class IgnoredTestProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
+		resultTestSmellDTO.clear();
 	}
 
 	@Override

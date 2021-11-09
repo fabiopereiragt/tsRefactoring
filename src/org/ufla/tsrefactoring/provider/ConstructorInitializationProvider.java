@@ -14,7 +14,6 @@ public class ConstructorInitializationProvider implements IStructuredContentProv
 	private static List<ResultTestSmellDTO> resultTestSmellDTO = new ArrayList<ResultTestSmellDTO>();
 	
 	public ConstructorInitializationProvider() {
-		resultTestSmellDTO.clear();
 		resultTestSmellDTO = Analyzer.getFilesAnalyzed(TestSmell.CONSTRUCTOR_INITIALIZATION);
 	}
 
@@ -25,6 +24,7 @@ public class ConstructorInitializationProvider implements IStructuredContentProv
 
 	@Override
 	public void dispose() {
+		resultTestSmellDTO.clear();
 	}
 
 	@Override
