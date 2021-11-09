@@ -177,8 +177,11 @@ public class RedundantPrintView extends ViewPart {
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
-				Object obj = selection.getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
+				// Object obj = selection.getFirstElement();
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
+				if(showQuestionMessage(rs.getMethodName())) {
+					
+				}
 			}
 		};
 	}
@@ -191,6 +194,13 @@ public class RedundantPrintView extends ViewPart {
 		});
 	}
 
+	private boolean showQuestionMessage(String message) {
+		return MessageDialog.openQuestion(
+				viewer.getControl().getShell(), 
+				"Question",
+				"Do you really want to apply refactoring in this method: "+ message + "?");
+	}
+	
 	private void showMessage(String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(), "Test", message);
 	}
@@ -200,10 +210,9 @@ public class RedundantPrintView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	// Ao fechar a tab
+	// When closing a tab
 	@Override
 	public void dispose() {
-		// filesAnalyzed.clear();
 	}
 
 }

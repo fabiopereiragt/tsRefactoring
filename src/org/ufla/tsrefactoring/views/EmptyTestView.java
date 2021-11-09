@@ -1,6 +1,5 @@
 package org.ufla.tsrefactoring.views;
 
-
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
@@ -60,17 +59,17 @@ public class EmptyTestView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		
-		// define the TableViewer
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION);
-		
-		viewer.setContentProvider(new EmptyTestProvider());
-		
-		/*ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
-		columnsLabels.createColumns(viewer);*/
 
-		
+		// define the TableViewer
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+
+		viewer.setContentProvider(new EmptyTestProvider());
+
+		/*
+		 * ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
+		 * columnsLabels.createColumns(viewer);
+		 */
+
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
 		colTestSmell.getColumn().setText("Source Method");
@@ -105,8 +104,8 @@ public class EmptyTestView extends ViewPart {
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) element;
 				return rs.getFilePath();
 			}
-		});  
-		
+		});
+
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);
 		viewer.setInput(getViewSite());
@@ -174,11 +173,15 @@ public class EmptyTestView extends ViewPart {
 		action2.setText("Action 2");
 		action2.setToolTipText("Action 2 tooltip");
 		action2.setImageDescriptor(workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
-				Object obj = selection.getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
+				// Object obj = selection.getFirstElement();
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
+				if(showQuestionMessage(rs.getMethodName())) {
+					
+				}
 			}
 		};
 	}
@@ -191,6 +194,13 @@ public class EmptyTestView extends ViewPart {
 		});
 	}
 
+	private boolean showQuestionMessage(String message) {
+		return MessageDialog.openQuestion(
+				viewer.getControl().getShell(), 
+				"Question",
+				"Do you really want to apply refactoring in this method: "+ message + "?");
+	}
+	
 	private void showMessage(String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(), "Test", message);
 	}
@@ -200,10 +210,9 @@ public class EmptyTestView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	// Ao fechar a tab
+	// When closing a tab
 	@Override
 	public void dispose() {
-		// filesAnalyzed.clear();
 	}
 
 }
