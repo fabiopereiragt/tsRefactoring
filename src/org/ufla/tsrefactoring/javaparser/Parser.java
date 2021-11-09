@@ -24,25 +24,30 @@ public class Parser {
 		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
 			try {
 				CompilationUnit cu = StaticJavaParser.parse(file);
+
 				if (testSmell == TestSmell.EMPTY_TEST) {
 					EmptyTestVisitor v = new EmptyTestVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), 
+							projectDir.toString().concat(path));
 					insert(classData);
 				} else if (testSmell == TestSmell.IGNORED_TEST) {
 					IgnoredTestVisitor v = new IgnoredTestVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
+							projectDir.toString().concat(path));
 					insert(classData);
 				} else if (testSmell == TestSmell.REDUNDANT_PRINT) {
 					RedundantPrintVisitor v = new RedundantPrintVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
+							projectDir.toString().concat(path));
 					insert(classData);
 				} else {
 					ConstructorInitializationVisitor v = new ConstructorInitializationVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), path);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
+							projectDir.toString().concat(path));
 					insert(classData);
 				}
 			} catch (IOException e) {
