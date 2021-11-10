@@ -1,5 +1,7 @@
 package org.ufla.tsrefactoring.views;
 
+import java.io.FileNotFoundException;
+
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
@@ -26,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.EmptyTestProvider;
+import org.ufla.tsrefactoring.refactoring.EmptyTestRefactoring;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -180,7 +183,11 @@ public class EmptyTestView extends ViewPart {
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
 				if(showQuestionMessage(rs.getMethodName())) {
-					
+					try {
+						EmptyTestRefactoring.executeRefactory(rs);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};
