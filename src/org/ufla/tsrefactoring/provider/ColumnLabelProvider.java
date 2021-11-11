@@ -6,7 +6,6 @@ import org.eclipse.swt.SWT;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 
 public class ColumnLabelProvider {
-	public void test() {}
 	public void createColumns(TableViewer viewer) {
 		String[] titles = { "Source Method", "Line", "File path" };
 		int[] bounds = { 100, 100, 100 };

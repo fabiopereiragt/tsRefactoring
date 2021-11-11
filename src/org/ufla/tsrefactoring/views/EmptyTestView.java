@@ -57,7 +57,6 @@ public class EmptyTestView extends ViewPart {
 
 	private TableViewer viewer;
 	private Action action1;
-	private Action action2;
 	private Action doubleClickAction;
 
 	@Override
@@ -141,20 +140,16 @@ public class EmptyTestView extends ViewPart {
 
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 	}
 
 	private void makeActions() {
@@ -168,15 +163,7 @@ public class EmptyTestView extends ViewPart {
 		action1.setImageDescriptor(
 				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
-		action2 = new Action() {
-			public void run() {
-				showMessage("Test", "Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-
+	
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();

@@ -33,6 +33,8 @@ public class EmptyTestRefactoring {
 		}, null);
 
 		try {
+			//The second parameter says to append the file. 
+			//False, the file will be cleared before writing
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(cu.toString());
 			fw.close();
