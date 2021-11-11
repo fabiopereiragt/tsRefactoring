@@ -184,10 +184,11 @@ public class EmptyTestView extends ViewPart {
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
 				if (showQuestionMessage(rs.getMethodName())) {
 					try {
-						if (EmptyTestRefactoring.executeRefactory(rs)) {
-							viewer.refresh();
+						if (EmptyTestRefactoring.executeRefactory(rs)) {						
 							showMessage("Refactoring",
 									"Successfully refactored. Open the file again to view the refactoring.");
+							//Remove the item on the table list
+							viewer.remove(rs);							
 						}
 
 					} catch (FileNotFoundException e) {
@@ -224,5 +225,7 @@ public class EmptyTestView extends ViewPart {
 	@Override
 	public void dispose() {
 	}
+	
+	
 
 }
