@@ -24,9 +24,11 @@ public class DirExplorer {
 	}
 
 	private void explore(int level, String path, File file) {
+		//get the separator "/" of the S.O. (linux or windows)
+		String separator = System.getProperty("file.separator"); 
 		if (file.isDirectory()) {
 			for (File child : file.listFiles()) {
-				explore(level + 1, path + "\\" + child.getName(), child);
+				explore(level + 1, path + separator + child.getName(), child);
 			}
 		} else {
 			if (filter.interested(level, path, file)) {

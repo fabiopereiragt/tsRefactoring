@@ -160,7 +160,7 @@ public class EmptyTestView extends ViewPart {
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				showMessage("Test", "Action 2 executed");
 			}
 		};
 		action1.setText("Action 1");
@@ -170,7 +170,7 @@ public class EmptyTestView extends ViewPart {
 
 		action2 = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				showMessage("Test", "Action 2 executed");
 			}
 		};
 		action2.setText("Action 2");
@@ -182,9 +182,14 @@ public class EmptyTestView extends ViewPart {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				if(showQuestionMessage(rs.getMethodName())) {
+				if (showQuestionMessage(rs.getMethodName())) {
 					try {
-						EmptyTestRefactoring.executeRefactory(rs);
+						if (EmptyTestRefactoring.executeRefactory(rs)) {
+							viewer.refresh();
+							showMessage("Refactoring",
+									"Successfully refactored. Open the file again to view the refactoring.");
+						}
+
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -202,14 +207,12 @@ public class EmptyTestView extends ViewPart {
 	}
 
 	private boolean showQuestionMessage(String message) {
-		return MessageDialog.openQuestion(
-				viewer.getControl().getShell(), 
-				"Question",
-				"Do you really want to apply refactoring in this method: "+ message + "?");
+		return MessageDialog.openQuestion(viewer.getControl().getShell(), "Question",
+				"Do you really want to apply refactoring in this method: " + message + "?");
 	}
-	
-	private void showMessage(String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), "Test", message);
+
+	private void showMessage(String title, String message) {
+		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
 	}
 
 	@Override
