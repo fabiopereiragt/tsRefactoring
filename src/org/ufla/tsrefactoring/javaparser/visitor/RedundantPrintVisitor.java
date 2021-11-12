@@ -21,10 +21,10 @@ public class RedundantPrintVisitor extends VoidVisitorAdapter<Void> {
 	public void visit(MethodDeclaration n, Void arg) {
 		if (Util.isValidTestMethod(n)) {
 			currentMethod = n;
-			
+
 			super.visit(n, arg);
 
-			if(printCount >= 1) {
+			if (printCount >= 1) {
 				this.methods.put(n.getNameAsString(), n.getBegin().get().line);
 			}
 
@@ -32,7 +32,6 @@ public class RedundantPrintVisitor extends VoidVisitorAdapter<Void> {
 			currentMethod = null;
 			printCount = 0;
 		}
-
 	}
 
 	// examine the methods being called within the test method
@@ -44,6 +43,7 @@ public class RedundantPrintVisitor extends VoidVisitorAdapter<Void> {
 			// 'write'
 			if (n.getNameAsString().equals("print") || n.getNameAsString().equals("println")
 					|| n.getNameAsString().equals("printf") || n.getNameAsString().equals("write")) {
+
 				// check the scope of the method & proceed only if the scope is "out"
 				if ((n.getScope().isPresent() && n.getScope().get() instanceof FieldAccessExpr
 						&& (((FieldAccessExpr) n.getScope().get())).getNameAsString().equals("out"))) {
@@ -53,7 +53,9 @@ public class RedundantPrintVisitor extends VoidVisitorAdapter<Void> {
 					// check the scope of the field & proceed only if the scope is "System"
 					if ((f1.getScope() != null && f1.getScope() instanceof NameExpr
 							&& ((NameExpr) f1.getScope()).getNameAsString().equals("System"))) {
-						// a print statement exists in the method body
+						// System.out.println("Third if: " + f1.getNameAsString() + "line" +
+						// f1.getBegin().get().line);
+						// this.methods.put(currentMethod.getNameAsString(), f1.getBegin().get().line);
 						printCount++;
 					}
 				}

@@ -1,5 +1,7 @@
 package org.ufla.tsrefactoring.views;
 
+import java.io.FileNotFoundException;
+
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
@@ -26,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.RedundantPrintProvider;
+import org.ufla.tsrefactoring.refactoring.RedundantPrintRefactoring;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -54,7 +57,6 @@ public class RedundantPrintView extends ViewPart {
 
 	private TableViewer viewer;
 	private Action action1;
-	private Action action2;
 	private Action doubleClickAction;
 
 	@Override
@@ -139,26 +141,22 @@ public class RedundantPrintView extends ViewPart {
 
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 	}
 
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				showMessage("Test","Action 1 executed");
 			}
 		};
 		action1.setText("Action 1");
@@ -166,21 +164,23 @@ public class RedundantPrintView extends ViewPart {
 		action1.setImageDescriptor(
 				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
-		action2 = new Action() {
-			public void run() {
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				if(showQuestionMessage(rs.getMethodName())) {
-					
+				if (showQuestionMessage(rs.getMethodName())) {
+					try {
+						if (RedundantPrintRefactoring.executeRefactory(rs)) {
+							showMessage("Refactoring",
+									"Successfully refactored. Open the file again to view the refactoring.");
+							// Remove the item on the table list
+							viewer.remove(rs);
+						}
+
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};
@@ -195,14 +195,12 @@ public class RedundantPrintView extends ViewPart {
 	}
 
 	private boolean showQuestionMessage(String message) {
-		return MessageDialog.openQuestion(
-				viewer.getControl().getShell(), 
-				"Question",
-				"Do you really want to apply refactoring in this method: "+ message + "?");
+		return MessageDialog.openQuestion(viewer.getControl().getShell(), "Question",
+				"Do you really want to apply refactoring in this method: " + message + "?");
 	}
-	
-	private void showMessage(String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), "Test", message);
+
+	private void showMessage(String title, String message) {
+		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
 	}
 
 	@Override
