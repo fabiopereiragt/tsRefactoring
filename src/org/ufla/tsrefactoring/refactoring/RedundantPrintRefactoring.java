@@ -65,16 +65,6 @@ public class RedundantPrintRefactoring {
 			e.printStackTrace();
 		}
 		return false;
-
-		// System.out.println(cu);
 	}
-
-	/*
-	 * CompilationUnit cu = StaticJavaParser.parse(new
-	 * File(emptyTestSmell.getFilePath())); cu.walk(MethodDeclaration.class, e -> {
-	 * if (e.getBody().get().getStatements().size() == 0) { if
-	 * (e.getBegin().get().line == emptyTestSmell.getLineNumber()) { e.remove();
-	 * System.out.println("Retirei"); } } });
-	 */
 
 }

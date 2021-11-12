@@ -33,8 +33,8 @@ public class EmptyTestRefactoring {
 		}, null);
 
 		try {
-			//The second parameter says to append the file. 
-			//False, the file will be cleared before writing
+			// The second parameter says to append the file.
+			// False, the file will be cleared before writing
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(cu.toString());
 			fw.close();
@@ -44,14 +44,6 @@ public class EmptyTestRefactoring {
 		}
 		return false;
 
-		// System.out.println(cu);
 	}
 
-	/*
-	 * CompilationUnit cu = StaticJavaParser.parse(new
-	 * File(emptyTestSmell.getFilePath())); cu.walk(MethodDeclaration.class, e -> {
-	 * if (e.getBody().get().getStatements().size() == 0) { if
-	 * (e.getBegin().get().line == emptyTestSmell.getLineNumber()) { e.remove();
-	 * System.out.println("Retirei"); } } });
-	 */
 }
