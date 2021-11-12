@@ -10,29 +10,21 @@ import org.ufla.tsrefactoring.util.Util;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.visitor.ModifierVisitor;
-import com.github.javaparser.ast.visitor.Visitable;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class RedundantPrintRefactoring {
 
-	public static boolean executeRefactory(ResultTestSmellDTO emptyTestSmell) throws FileNotFoundException {
+	public static boolean executeRefactory(ResultTestSmellDTO refactoringTestSmell) throws FileNotFoundException {
 
-		File file = new File(emptyTestSmell.getFilePath());
+		File file = new File(refactoringTestSmell.getFilePath());
 		CompilationUnit cu = StaticJavaParser.parse(file);
-		
-		cu.walk(MethodDeclaration.class, e -> {
 
-			if (Util.isValidTestMethod(e)) {
-
-				new VoidVisitorAdapter<Object>() {
-					@Override
-					public void visit(MethodCallExpr n, Object arg) {
-						
+		cu.getTypes().forEach(type -> {
+			type.getMethods().forEach(method -> {
+				if (Util.isValidTestMethod(method) && method.getBegin().get().line == refactoringTestSmell.getLineNumber()) {
+					method.walk(MethodCallExpr.class, n -> {
 						// if the name of a method being called is 'print' or 'println' or 'printf' or
 						// 'write'
 						if (n.getNameAsString().equals("print") || n.getNameAsString().equals("println")
@@ -47,15 +39,19 @@ public class RedundantPrintRefactoring {
 								// check the scope of the field & proceed only if the scope is "System"
 								if ((f1.getScope() != null && f1.getScope() instanceof NameExpr
 										&& ((NameExpr) f1.getScope()).getNameAsString().equals("System"))) {
-									System.out.println(n);
-								
+
+									// Remove System.out
+									f1.removeForced();
+
+									n.setName("//Comment added by tsRefactoring: System.out." + n.getNameAsString());
+									// n.removeForced(); //remove o Systen.out.print("");
 								}
 							}
 						}
-					}
-				}.visit(e, null);
 
-			}
+					});
+				}
+			});
 		});
 
 		try {
