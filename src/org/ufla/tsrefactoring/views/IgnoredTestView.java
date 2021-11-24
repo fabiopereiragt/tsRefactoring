@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -20,11 +19,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.IgnoredTestProvider;
@@ -56,7 +52,6 @@ public class IgnoredTestView extends ViewPart {
 	IWorkbench workbench;
 
 	private TableViewer viewer;
-	private Action action1;
 	private Action doubleClickAction;
 
 	@Override
@@ -116,7 +111,6 @@ public class IgnoredTestView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
-		contributeToActionBars();
 	}
 
 	private void hookContextMenu() {
@@ -131,38 +125,14 @@ public class IgnoredTestView extends ViewPart {
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
-	}
+	
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-	}
-
-	private void makeActions() {
-		action1 = new Action() {
-			public void run() {
-				showMessage("Test", "Action 1 executed");
-			}
-		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-
+	private void makeActions() {	
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
