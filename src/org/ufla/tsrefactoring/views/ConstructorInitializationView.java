@@ -1,9 +1,17 @@
 package org.ufla.tsrefactoring.views;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -21,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.ConstructorInitializationProvider;
@@ -126,35 +135,53 @@ public class ConstructorInitializationView extends ViewPart {
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
-	
 
-	private void fillContextMenu(IMenuManager manager) {	
+	private void fillContextMenu(IMenuManager manager) {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
-	
 
-	private void makeActions() {			
-		
+	private void makeActions() {
+
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				if(showQuestionMessage(rs.getMethodName())) {
+				openFile(rs.getFilePath());
+
+				if (showQuestionMessage(rs.getMethodName())) {
 					try {
-						if(ConstructorInitializationRefactoring.executeRefactory(rs)) {
+						if (ConstructorInitializationRefactoring.executeRefactory(rs)) {
 							showMessage("Refactoring",
 									"Successfully refactored. Open the file again to view the refactoring.");
-							//Remove the item on the table list
-							viewer.remove(rs);	
+							// Remove the item on the table list
+							viewer.remove(rs);
 						}
 
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
-					
+
 				}
+			}
+
+			private void openFile(String filePath) {
+				File file = new File(filePath);
+				URI location = file.toURI();
+				IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(location);
+				IFile sourceFile = files[0];
+				IJavaElement sourceJavaElement = JavaCore.create(sourceFile);
+				try {
+					JavaUI.openInEditor(sourceJavaElement);
+				} catch (PartInitException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (JavaModelException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 			}
 		};
 	}
@@ -175,7 +202,6 @@ public class ConstructorInitializationView extends ViewPart {
 	private void showMessage(String title, String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
 	}
-
 
 	@Override
 	public void setFocus() {

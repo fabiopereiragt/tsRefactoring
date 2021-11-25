@@ -19,9 +19,11 @@ public class RedundantPrintRefactoring {
 	public static boolean executeRefactory(ResultTestSmellDTO refactoringTestSmell) throws FileNotFoundException {
 
 		File file = new File(refactoringTestSmell.getFilePath());
-		CompilationUnit cu = StaticJavaParser.parse(file);
+		CompilationUnit cu = StaticJavaParser.parse(file);	
+		
 
 		cu.getTypes().forEach(type -> {
+			
 			type.getMethods().forEach(method -> {
 				if (Util.isValidTestMethod(method) && method.getBegin().get().line == refactoringTestSmell.getLineNumber()) {
 					method.walk(MethodCallExpr.class, n -> {
