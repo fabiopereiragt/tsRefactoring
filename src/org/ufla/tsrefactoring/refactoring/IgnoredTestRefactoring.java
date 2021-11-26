@@ -15,8 +15,8 @@ import com.github.javaparser.ast.visitor.ModifierVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 
 public class IgnoredTestRefactoring {
-	public static boolean executeRefactory(ResultTestSmellDTO emptyTestSmell) throws FileNotFoundException {
-		File file = new File(emptyTestSmell.getFilePath());
+	public static boolean executeRefactory(ResultTestSmellDTO ignoredTestSmell) throws FileNotFoundException {
+		File file = new File(ignoredTestSmell.getFilePath());
 		CompilationUnit cu = StaticJavaParser.parse(file);
 
 		//Remove the method
@@ -24,8 +24,8 @@ public class IgnoredTestRefactoring {
 
 			@Override
 			public Visitable visit(MethodDeclaration n, Void arg) {
-				if (n.getAnnotationByName("Ignore").isPresent()) {
-					if (n.getBegin().get().line == emptyTestSmell.getLineNumber()) {
+				if (n.getAnnotationByName("Ignore").isPresent() || n.getAnnotationByName("Disabled").isPresent()) {
+					if (n.getBegin().get().line == ignoredTestSmell.getLineNumber()) {
 						return null;						
 					}
 				}
@@ -36,7 +36,8 @@ public class IgnoredTestRefactoring {
 		//Remove the import
 		cu.walk(ImportDeclaration.class, e -> {
 			//System.out.println(e.getNameAsString());
-		    if ("org.junit.Ignore".equals(e.getNameAsString())) {
+		    if ("org.junit.Ignore".equals(e.getNameAsString()) ||
+		    		"org.junit.jupiter.api.Disabled".equals(e.getNameAsString())) {
 		        e.remove();
 		    }
 		});

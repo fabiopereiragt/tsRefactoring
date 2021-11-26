@@ -65,7 +65,7 @@ public class ConstructorInitializationRefactoring {
 		 * n.addMember(method); return super.visit(n, arg); } }, null);
 		 */
 		
-		/*
+		
 		try {
 			// The second parameter says to append the file.
 			// False, the file will be cleared before writing
@@ -75,7 +75,7 @@ public class ConstructorInitializationRefactoring {
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 		return false;
 	}
 

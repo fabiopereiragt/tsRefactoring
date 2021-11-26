@@ -13,7 +13,7 @@ public class IgnoredTestVisitor extends VoidVisitorAdapter<Void> {
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
-		if (n.getAnnotationByName("Ignore").isPresent()) {
+		if (n.getAnnotationByName("Ignore").isPresent() || n.getAnnotationByName("Disabled").isPresent()) {
 			this.methods.put(n.getNameAsString(), n.getBegin().get().line);
 		}
 
