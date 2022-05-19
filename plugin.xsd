@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="plugin">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="extension" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence minOccurs="0">
+              <xs:element name="actionSet" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="menu">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="separator">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="name" use="required" />
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="label" use="required" />
+                        <xs:attribute name="id" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="action" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="class" use="required" />
+                            <xs:attribute name="icon" use="required" />
+                            <xs:attribute name="id" use="required" />
+                            <xs:attribute name="label" use="required" />
+                            <xs:attribute name="menubarPath" use="required" />
+                            <xs:attribute name="style" use="required" />
+                            <xs:attribute name="tooltip" use="required" />
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="label" use="required" />
+                  <xs:attribute name="visible" type="xs:boolean" use="required" />
+                  <xs:attribute name="id" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="category" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="name" use="required" />
+                      <xs:attribute name="id" use="required" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="view" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="category" use="required" />
+                      <xs:attribute name="class" use="required" />
+                      <xs:attribute name="icon" use="required" />
+                      <xs:attribute name="id" use="required" />
+                      <xs:attribute name="name" use="required" />
+                      <xs:attribute name="inject" type="xs:boolean" use="required" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="point" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

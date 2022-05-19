@@ -1,0 +1,30 @@
+<!ELEMENT plugin (extension+)>
+<!ELEMENT extension (actionSet?,category?,view*)>
+<!ATTLIST extension point NMTOKEN #REQUIRED>
+<!ELEMENT actionSet (menu,action+)>
+<!ATTLIST actionSet label NMTOKEN #REQUIRED>
+<!ATTLIST actionSet visible NMTOKEN #REQUIRED>
+<!ATTLIST actionSet id NMTOKEN #REQUIRED>
+<!ELEMENT menu (separator)>
+<!ATTLIST menu label CDATA #REQUIRED>
+<!ATTLIST menu id NMTOKEN #REQUIRED>
+<!ELEMENT separator (#PCDATA)>
+<!ATTLIST separator name NMTOKEN #REQUIRED>
+<!ELEMENT action (#PCDATA)>
+<!ATTLIST action class NMTOKEN #REQUIRED>
+<!ATTLIST action icon CDATA #REQUIRED>
+<!ATTLIST action id NMTOKEN #REQUIRED>
+<!ATTLIST action label CDATA #REQUIRED>
+<!ATTLIST action menubarPath CDATA #REQUIRED>
+<!ATTLIST action style NMTOKEN #REQUIRED>
+<!ATTLIST action tooltip CDATA #REQUIRED>
+<!ELEMENT category (#PCDATA)>
+<!ATTLIST category name CDATA #REQUIRED>
+<!ATTLIST category id NMTOKEN #REQUIRED>
+<!ELEMENT view (#PCDATA)>
+<!ATTLIST view category NMTOKEN #REQUIRED>
+<!ATTLIST view class NMTOKEN #REQUIRED>
+<!ATTLIST view icon CDATA #REQUIRED>
+<!ATTLIST view id NMTOKEN #REQUIRED>
+<!ATTLIST view name CDATA #REQUIRED>
+<!ATTLIST view inject NMTOKEN #REQUIRED>

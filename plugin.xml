@@ -33,7 +33,7 @@
                style="push"
                tooltip="Ignored Test">
          </action>
-            <action
+         <action
                class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
                icon="icons/bug_yellow.png"
                id="EmptyTest"
@@ -42,7 +42,7 @@
                style="push"
                tooltip="Empty Test">
          </action>
-            <action
+         <action
                class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
                icon="icons/bug_blue.png"
                id="RedundantPrint"
@@ -50,7 +50,16 @@
                menubarPath="BadSmellsMenu/sampleGroup"
                style="push"
                tooltip="Redundant Print">
-         </action>         
+         </action> 
+         <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_pink.png"
+               id="ResourceOptimism"
+               label="Resource Optimism"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Resource Optimism">
+         </action>                 
       </actionSet>      
    </extension>
    
@@ -68,7 +77,7 @@
             name="Constructor Initialization"
             inject="true">
       </view>
-          <view
+      <view
             category="org.ufla.tsrefactoring"
             class="org.ufla.tsrefactoring.views.IgnoredTestView"
             icon="icons/bug_green.png"
@@ -76,7 +85,7 @@
             name="Ignored Test"
             inject="true">
       </view>
-          <view
+      <view
             category="org.ufla.tsrefactoring"
             class="org.ufla.tsrefactoring.views.EmptyTestView"
             icon="icons/bug_yellow.png"
@@ -84,12 +93,20 @@
             name="Empty Test"
             inject="true">
       </view>
-          <view
+      <view
             category="org.ufla.tsrefactoring"
             class="org.ufla.tsrefactoring.views.RedundantPrintView"
             icon="icons/bug_blue.png"
             id="org.ufla.tsrefactoring.views.RedundantPrintView"
             name="RedundantPrint"
+            inject="true">
+      </view>
+      <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.ResourceOptimismView"
+            icon="icons/bug_pink.png"
+            id="org.ufla.tsrefactoring.views.ResourceOptimismView"
+            name="ResourceOptimism"
             inject="true">
       </view>
      
