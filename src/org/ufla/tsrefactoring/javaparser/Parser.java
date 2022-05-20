@@ -13,6 +13,7 @@ import org.ufla.tsrefactoring.javaparser.visitor.ConstructorInitializationVisito
 import org.ufla.tsrefactoring.javaparser.visitor.EmptyTestVisitor;
 import org.ufla.tsrefactoring.javaparser.visitor.IgnoredTestVisitor;
 import org.ufla.tsrefactoring.javaparser.visitor.RedundantPrintVisitor;
+import org.ufla.tsrefactoring.javaparser.visitor.ResourceOptimismVisitor;
 import org.ufla.tsrefactoring.util.DirExplorer;
 
 public class Parser {
@@ -39,6 +40,12 @@ public class Parser {
 					insert(classData);
 				} else if (testSmell == TestSmell.REDUNDANT_PRINT) {
 					RedundantPrintVisitor v = new RedundantPrintVisitor();
+					v.visit(cu, null);
+					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
+							projectDir.toString().concat(path));
+					insert(classData);
+				} else if (testSmell == TestSmell.RESOURCE_OPTIMISM) {
+					ResourceOptimismVisitor v = new ResourceOptimismVisitor();
 					v.visit(cu, null);
 					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
 							projectDir.toString().concat(path));

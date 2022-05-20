@@ -40,6 +40,8 @@ public class TestSmellsMenu implements IWorkbenchWindowActionDelegate {
 				page.showView("org.ufla.tsrefactoring.views.IgnoredTestView");
 			} else if (action.getId().equals("EmptyTest")) {
 				page.showView("org.ufla.tsrefactoring.views.EmptyTestView");
+			} else if (action.getId().equals("ResourceOptimism")) {
+				page.showView("org.ufla.tsrefactoring.views.ResourceOptimismView");
 			}else {
 				page.showView("org.ufla.tsrefactoring.views.RedundantPrintView");
 			}
