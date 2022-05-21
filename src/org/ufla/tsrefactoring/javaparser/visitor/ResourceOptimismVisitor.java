@@ -20,6 +20,7 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 
 	private MethodDeclaration currentMethod = null;
 	private boolean hasSmell = false;
+	private int numberLine = 0;
 	private List<String> methodVariables = new ArrayList<>();
 	private List<String> classVariables = new ArrayList<>();
 	private Map<String, Integer> methods = new HashMap<String, Integer>();
@@ -32,10 +33,8 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 			super.visit(n, arg);
 
 			if (hasSmell && methodVariables.size() > 0) {
-				System.out.println("Receba carai");
-				System.out.println(n.getNameAsString());
-				System.out.println("Linha: " + n.getBegin().get().line);
-				this.methods.put(n.getNameAsString(), n.getBegin().get().line);
+				//this.methods.put(n.getNameAsString(), n.getBegin().get().line);
+				this.methods.put(n.getNameAsString(), this.numberLine);
 			}
 
 			// reset values for next method
@@ -51,7 +50,7 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 		if (currentMethod != null) {
 			for (VariableDeclarator variableDeclarator : n.getVariables()) {
 				if (variableDeclarator.getType().equals("File")) {
-					methodVariables.add(variableDeclarator.getNameAsString());
+					methodVariables.add(variableDeclarator.getNameAsString());					
 				}
 			}
 		}
@@ -70,7 +69,6 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 				}
 			}
 		} else {
-			System.out.println("Receba carai");
 			System.out.println(n.getType());
 		}
 		super.visit(n, arg);
@@ -81,10 +79,12 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 		if (currentMethod != null) {
 			if (n.getType().asString().equals("File")) {
 				methodVariables.add(n.getNameAsString());
+				numberLine = n.getBegin().get().line;
 			}
 		} else {
 			if (n.getType().asString().equals("File")) {
 				classVariables.add(n.getNameAsString());
+				numberLine = n.getBegin().get().line;
 			}
 		}
 		super.visit(n, arg);
