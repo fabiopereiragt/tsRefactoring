@@ -1,17 +1,10 @@
 package org.ufla.tsrefactoring.views;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 
 import javax.inject.Inject;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -29,7 +22,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.EmptyTestProvider;
@@ -140,46 +132,31 @@ public class EmptyTestView extends ViewPart {
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-
 	private void makeActions() {
-	
+
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				openFile(rs.getFilePath());
+				try {
+					UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				}
 				if (showQuestionMessage(rs.getMethodName())) {
 					try {
-						if (EmptyTestRefactoring.executeRefactory(rs)) {						
+						if (EmptyTestRefactoring.executeRefactory(rs)) {
 							showMessage("Refactoring",
 									"Successfully refactored. Open the file again to view the refactoring.");
-							//Remove the item on the table list
-							viewer.remove(rs);							
+							// Remove the item on the table list
+							viewer.remove(rs);
 						}
 
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
 				}
-			}
-			
-			private void openFile(String filePath) {
-				File file = new File(filePath);
-				URI location = file.toURI();
-				IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(location);
-				IFile sourceFile = files[0];
-				IJavaElement sourceJavaElement = JavaCore.create(sourceFile);
-				try {
-					JavaUI.openInEditor(sourceJavaElement);
-				} catch (PartInitException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (JavaModelException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
 			}
 		};
 	}
@@ -210,7 +187,5 @@ public class EmptyTestView extends ViewPart {
 	@Override
 	public void dispose() {
 	}
-	
-	
 
 }
