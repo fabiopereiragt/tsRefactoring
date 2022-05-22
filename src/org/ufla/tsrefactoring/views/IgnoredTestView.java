@@ -1,7 +1,5 @@
 package org.ufla.tsrefactoring.views;
 
-import java.io.FileNotFoundException;
-
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.CoreException;
@@ -10,7 +8,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -20,12 +17,14 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.provider.IgnoredTestProvider;
-import org.ufla.tsrefactoring.refactoring.IgnoredTestRefactoring;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -53,6 +52,7 @@ public class IgnoredTestView extends ViewPart {
 	IWorkbench workbench;
 
 	private TableViewer viewer;
+	private Action refactoring;
 	private Action doubleClickAction;
 
 	@Override
@@ -62,11 +62,6 @@ public class IgnoredTestView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		viewer.setContentProvider(new IgnoredTestProvider());
-
-		/*
-		 * ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
-		 * columnsLabels.createColumns(viewer);
-		 */
 
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
@@ -128,11 +123,26 @@ public class IgnoredTestView extends ViewPart {
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		// Other plug-ins can contribute there actions here
+		manager.add(refactoring);
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void makeActions() {
+		refactoring = new Action() {
+			public void run() {
+				IStructuredSelection selection = viewer.getStructuredSelection();
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
+				UtilView.executeRefactor(selection, rs, viewer, TestSmell.IGNORED_TEST);
+			}
+		};
+		refactoring.setText("Refactor");
+		refactoring.setToolTipText("Refactor the test smell");
+		refactoring.setImageDescriptor(
+			PlatformUI.getWorkbench().getSharedImages()
+			.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK)
+		);
+
+		//Open the file in the test smell location
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
@@ -142,42 +152,17 @@ public class IgnoredTestView extends ViewPart {
 					UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 				} catch (CoreException e1) {
 					e1.printStackTrace();
-				}
-				if (showQuestionMessage(rs.getMethodName())) {
-					try {
-						if (IgnoredTestRefactoring.executeRefactory(rs)) {
-							showMessage("Refactoring",
-									"Successfully refactored. Open the file again to view the refactoring.");
-							// Remove the item on the table list
-							viewer.remove(rs);
-						}
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
+				}			
 			}
-
 		};
 	}
-
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
-	}
-
-	private boolean showQuestionMessage(String message) {
-		return MessageDialog.openQuestion(viewer.getControl().getShell(), "Question",
-				"ATTENTION: this operation cannot be undone."
-						+ "\nDo you really want to apply refactoring in this method: " + message + "?");
-	}
-
-	private void showMessage(String title, String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
-	}
+	}	
 
 	@Override
 	public void setFocus() {

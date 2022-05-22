@@ -1,7 +1,5 @@
 package org.ufla.tsrefactoring.views;
 
-import java.io.FileNotFoundException;
-
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.CoreException;
@@ -10,7 +8,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -20,27 +17,14 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.provider.ConstructorInitializationProvider;
-import org.ufla.tsrefactoring.refactoring.ConstructorInitializationRefactoring;
-
-/**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
- */
 
 public class ConstructorInitializationView extends ViewPart {
 
@@ -53,6 +37,7 @@ public class ConstructorInitializationView extends ViewPart {
 	IWorkbench workbench;
 
 	private TableViewer viewer;
+	private Action refactoring;
 	private Action doubleClickAction;
 
 	@Override
@@ -63,11 +48,6 @@ public class ConstructorInitializationView extends ViewPart {
 
 		// Provider the data
 		viewer.setContentProvider(new ConstructorInitializationProvider());
-
-		/*
-		 * ColumnLabelProvider columnsLabels = new ColumnLabelProvider();
-		 * columnsLabels.createColumns(viewer);
-		 */
 
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
@@ -129,39 +109,34 @@ public class ConstructorInitializationView extends ViewPart {
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		// Other plug-ins can contribute there actions here
+		manager.add(refactoring);
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void makeActions() {
+		refactoring = new Action() {
+			public void run() {
+				IStructuredSelection selection = viewer.getStructuredSelection();
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
+				UtilView.executeRefactor(selection, rs, viewer, TestSmell.CONSTRUCTOR_INITIALIZATION);
+			}
+		};
+		refactoring.setText("Refactor");
+		refactoring.setToolTipText("Refactor the test smell");
+		refactoring.setImageDescriptor(
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
+		// Open the file in the test smell location
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
-				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
 				try {
 					UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 				} catch (CoreException e1) {
 					e1.printStackTrace();
 				}
-
-				if (showQuestionMessage(rs.getMethodName())) {
-					try {
-						if (ConstructorInitializationRefactoring.executeRefactory(rs)) {
-							showMessage("Refactoring",
-									"Successfully refactored. Open the file again to view the refactoring.");
-							// Remove the item on the table list
-							viewer.remove(rs);
-						}
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-
-				}
 			}
-			
 		};
 	}
 
@@ -171,15 +146,6 @@ public class ConstructorInitializationView extends ViewPart {
 				doubleClickAction.run();
 			}
 		});
-	}
-
-	private boolean showQuestionMessage(String message) {
-		return MessageDialog.openQuestion(viewer.getControl().getShell(), "Question",
-				"Do you really want to apply refactoring in this method: " + message + "?");
-	}
-
-	private void showMessage(String title, String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
 	}
 
 	@Override
