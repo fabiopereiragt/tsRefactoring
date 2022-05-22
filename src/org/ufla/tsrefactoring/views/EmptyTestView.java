@@ -20,8 +20,10 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.provider.EmptyTestProvider;
@@ -53,6 +55,7 @@ public class EmptyTestView extends ViewPart {
 	IWorkbench workbench;
 
 	private TableViewer viewer;
+	private Action refactoring;
 	private Action doubleClickAction;
 
 	@Override
@@ -128,12 +131,43 @@ public class EmptyTestView extends ViewPart {
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
+		manager.add(refactoring);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void makeActions() {
 
+		refactoring = new Action() {
+			public void run() {
+				IStructuredSelection selection = viewer.getStructuredSelection();
+				// Object obj = selection.getFirstElement();
+				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
+				if (showQuestionMessage(rs.getMethodName())) {
+					try {
+						if (EmptyTestRefactoring.executeRefactory(rs)) {
+							//Open the file again
+							UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
+							// Remove the item on the table list
+							viewer.remove(rs);
+							showMessage("Refactoring",
+									"Successfully refactored. Open the file again to view the refactoring.");
+						}
+
+					} catch (FileNotFoundException | CoreException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		refactoring.setText("Refactor");
+		refactoring.setToolTipText("Refactor the test smell");
+		refactoring.setImageDescriptor(
+			PlatformUI.getWorkbench().getSharedImages()
+			.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK)
+		);
+
+		//Open the file in the test smell location
 		doubleClickAction = new Action() {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
@@ -143,20 +177,7 @@ public class EmptyTestView extends ViewPart {
 					UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 				} catch (CoreException e1) {
 					e1.printStackTrace();
-				}
-				if (showQuestionMessage(rs.getMethodName())) {
-					try {
-						if (EmptyTestRefactoring.executeRefactory(rs)) {
-							showMessage("Refactoring",
-									"Successfully refactored. Open the file again to view the refactoring.");
-							// Remove the item on the table list
-							viewer.remove(rs);
-						}
-
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
+				}			
 			}
 		};
 	}
