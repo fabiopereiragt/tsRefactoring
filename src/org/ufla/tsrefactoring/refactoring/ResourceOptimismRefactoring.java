@@ -55,14 +55,17 @@ public class ResourceOptimismRefactoring {
 					// Instrução a ser adicionada
 					Statement staticStatement = StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
 
-					// Busca o Bloco de instruções de qual "n" pertence
+					// Busca o Bloco de instruções de qual "n" pertence. IMPORTANTE: só é possível
+					// adicionar statement em Bloco de Instruções (BlockStmt)
 					BlockStmt block = n.findAncestor(BlockStmt.class).get();
 
-					// Converte o block de instruções em uma lista
+					// Converte o block de instruções em uma lista de nós com os filhos do bloco.
+					// Isso foi feito para identificar o índice da instrução que foi localizada,
+					// pois será acrescentada uma instrução logo abaixo dela
 					List<Node> blocks = block.getChildNodes();
 
-					// Converte os nós em string para comparar e pegar o índice da instrução para eu
-					// colocar a nova instrução após ela, ou seja: (índice + 1)
+					// Converte os nós em string para comparar e conseguir localizar qual nó é
+					// referente ao "n". Após, pega o index do nó encontrado.
 					int index = blocks.toString().indexOf(n.getParentNode().get().toString());
 
 					/*
@@ -81,7 +84,7 @@ public class ResourceOptimismRefactoring {
 					});
 
 				}
-				 System.out.println(cu.toString());
+				System.out.println(cu.toString());
 				return super.visit(n, arg);
 
 			}
