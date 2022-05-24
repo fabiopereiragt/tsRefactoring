@@ -2,70 +2,92 @@ package org.ufla.tsrefactoring.refactoring;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.List;
 
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
-import org.ufla.tsrefactoring.util.Util;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.visitor.ModifierVisitor;
+import com.github.javaparser.ast.visitor.Visitable;
 
 public class ResourceOptimismRefactoring {
-	
-	public static boolean executeRefactory(ResultTestSmellDTO refactoringTestSmell) throws FileNotFoundException {
 
-		File file = new File(refactoringTestSmell.getFilePath());
-		CompilationUnit cu = StaticJavaParser.parse(file);	
-		
+	public static boolean executeRefactory(ResultTestSmellDTO resourceOptimismTestSmell) throws FileNotFoundException {
 
-		cu.getTypes().forEach(type -> {
-			
-			type.getMethods().forEach(method -> {
-				if (Util.isValidTestMethod(method) && method.getBegin().get().line == refactoringTestSmell.getLineNumber()) {
-					method.walk(MethodCallExpr.class, n -> {
-						// if the name of a method being called is 'print' or 'println' or 'printf' or
-						// 'write'
-						if (n.getNameAsString().equals("print") || n.getNameAsString().equals("println")
-								|| n.getNameAsString().equals("printf") || n.getNameAsString().equals("write")) {
+		File file = new File(resourceOptimismTestSmell.getFilePath());
+		CompilationUnit cu = StaticJavaParser.parse(file);
 
-							// check the scope of the method & proceed only if the scope is "out"
-							if ((n.getScope().isPresent() && n.getScope().get() instanceof FieldAccessExpr
-									&& (((FieldAccessExpr) n.getScope().get())).getNameAsString().equals("out"))) {
+		/*
+		 * Adicionar instrução(statement) Só é possível adicionar uma linha de comando
+		 * no BlockStmt Daí, primeiramente vc precisa buscar o BlockStmt de onde vc quer
+		 * inserir o comando A primeira linha, busca o bloco de comando da qual onde
+		 * será inserido a instrução A segunda linha, o primeiro parâmetro informa o
+		 * index da posição onde adicionar no bloco e o segundo parâmetro, a expressão
+		 * em string, como por exemplo: "System.out.println(\"Hello World\");" BlockStmt
+		 * block = n.findAncestor(BlockStmt.class).get();
+		 * block.addStatement(POSIÇÃO_INDEX_ONDE_COLOCAR__EXPRESSAO, STRING_STATEMENT);
+		 * 
+		 * OU PODE FAZER ASSIM:
+		 *
+		 * Cria a instrução Statement staticStatement =
+		 * StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
+		 * 
+		 * Localiza o bloco onde quer inserir e insere na posição (index) do bloco
+		 * n.findAncestor(BlockStmt.class).ifPresent(x -> { x.addStatement(0,
+		 * staticStatement); });
+		 */
 
-								FieldAccessExpr f1 = (((FieldAccessExpr) n.getScope().get()));
+		cu.accept(new ModifierVisitor<Void>() {
 
-								// check the scope of the field & proceed only if the scope is "System"
-								if ((f1.getScope() != null && f1.getScope() instanceof NameExpr
-										&& ((NameExpr) f1.getScope()).getNameAsString().equals("System"))) {
+			@Override
+			public Visitable visit(VariableDeclarator n, Void arg) {
+				if ((n.getType().asString().equals("File"))
+						&& (n.getBegin().get().line == resourceOptimismTestSmell.getLineNumber())) {
 
-									// Remove System.out
-									f1.removeForced();
+					// Instrução a ser adicionada
+					Statement staticStatement = StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
 
-									n.setName("//Comment added by tsRefactoring: System.out." + n.getNameAsString());
-									// n.removeForced(); //remove o Systen.out.print("");
-								}
-							}
-						}
+					// Busca o Bloco de instruções de qual "n" pertence
+					BlockStmt block = n.findAncestor(BlockStmt.class).get();
 
+					// Converte o block de instruções em uma lista
+					List<Node> blocks = block.getChildNodes();
+
+					// Converte os nós em string para comparar e pegar o índice da instrução para eu
+					// colocar a nova instrução após ela, ou seja: (índice + 1)
+					int index = blocks.toString().indexOf(n.getParentNode().get().toString());
+
+					/*
+					 * blocks.forEach(x -> { //System.out.println(x);
+					 * System.out.println(x.toString().contains(n.getParentNode().get().toString()))
+					 * ; });
+					 */
+					// System.out.println(n.getParentNode().get());
+
+					// Busca o Bloco de instruções de qual "n" pertence novamente (poderia colocar
+					// diretamente "block.addStatement"
+					// Verifica se existe e insere a instrução na posição (index)
+					n.findAncestor(BlockStmt.class).ifPresent(x -> {
+						// x.addStatement(0, staticStatement1);
+						x.addStatement(index, staticStatement);
 					});
-				}
-			});
-		});
 
-		try {
-			// The second parameter says to append the file.
-			// False, the file will be cleared before writing
-			FileWriter fw = new FileWriter(file, false);
-			fw.write(cu.toString());
-			fw.close();
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+				}
+				 System.out.println(cu.toString());
+				return super.visit(n, arg);
+
+			}
+
+		}, null);
+
 		return false;
 	}
 
