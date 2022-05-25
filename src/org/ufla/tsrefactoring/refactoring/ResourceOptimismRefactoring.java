@@ -2,17 +2,16 @@ package org.ufla.tsrefactoring.refactoring;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
@@ -37,7 +36,7 @@ public class ResourceOptimismRefactoring {
 		 * 
 		 * OU PODE FAZER ASSIM:
 		 *
-		 * Cria a instrução Statement staticStatement =
+		 * Cria a instrução: Statement staticStatement =
 		 * StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
 		 * 
 		 * Localiza o bloco onde quer inserir e insere na posição (index) do bloco
@@ -53,7 +52,11 @@ public class ResourceOptimismRefactoring {
 						&& (n.getBegin().get().line == resourceOptimismTestSmell.getLineNumber())) {
 
 					// Instrução a ser adicionada
-					Statement staticStatement = StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
+					// Statement staticStatement =
+					// StaticJavaParser.parseStatement("System.out.println(\"Hello World\");");
+					Statement staticStatementA = StaticJavaParser.parseStatement(
+							"if (!" + n.getNameAsString() + ".exists()){" + "throw new FileNotFoundException(\"The file "
+									+ n.getNameAsString() + " does not exist.\");}");
 
 					// Busca o Bloco de instruções de qual "n" pertence. IMPORTANTE: só é possível
 					// adicionar statement em Bloco de Instruções (BlockStmt)
@@ -80,18 +83,27 @@ public class ResourceOptimismRefactoring {
 					// Verifica se existe e insere a instrução na posição (index)
 					n.findAncestor(BlockStmt.class).ifPresent(x -> {
 						// x.addStatement(0, staticStatement1);
-						x.addStatement(index, staticStatement);
+						x.addStatement(index, staticStatementA);
 					});
 
 				}
-				System.out.println(cu.toString());
+				// System.out.println(cu.toString());
 				return super.visit(n, arg);
-
 			}
 
 		}, null);
-
+		try {
+			// The second parameter says to append the file.
+			// False, the file will be cleared before writing
+			FileWriter fw = new FileWriter(file, false);
+			fw.write(cu.toString());
+			fw.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 }
+
