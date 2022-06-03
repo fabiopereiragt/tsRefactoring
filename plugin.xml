@@ -59,7 +59,16 @@
                menubarPath="BadSmellsMenu/sampleGroup"
                style="push"
                tooltip="Resource Optimism">
-         </action>                 
+         </action>  
+         <action
+               class="org.ufla.tsrefactoring.actions.TestSmellsMenu"
+               icon="icons/bug_brown.png"
+               id="MagicNumber"
+               label="Magic Number"
+               menubarPath="BadSmellsMenu/sampleGroup"
+               style="push"
+               tooltip="Magic Number">
+         </action>                  
       </actionSet>      
    </extension>
    
@@ -107,6 +116,14 @@
             icon="icons/bug_pink.png"
             id="org.ufla.tsrefactoring.views.ResourceOptimismView"
             name="ResourceOptimism"
+            inject="true">
+      </view>
+      <view
+            category="org.ufla.tsrefactoring"
+            class="org.ufla.tsrefactoring.views.MagicNumberView"
+            icon="icons/bug_brown.png"
+            id="org.ufla.tsrefactoring.views.MagicNumberView"
+            name="MagicNumber"
             inject="true">
       </view>
      
