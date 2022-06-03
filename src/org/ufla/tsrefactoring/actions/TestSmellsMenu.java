@@ -43,7 +43,7 @@ public class TestSmellsMenu implements IWorkbenchWindowActionDelegate {
 			} else if (action.getId().equals("ResourceOptimism")) {
 				page.showView("org.ufla.tsrefactoring.views.ResourceOptimismView");
 			}else if (action.getId().equals("MagicNumber")) {
-				page.showView("org.ufla.tsrefactoring.views.MagicNumber");
+				page.showView("org.ufla.tsrefactoring.views.MagicNumberView");
 			}else {
 				page.showView("org.ufla.tsrefactoring.views.RedundantPrintView");
 			}
