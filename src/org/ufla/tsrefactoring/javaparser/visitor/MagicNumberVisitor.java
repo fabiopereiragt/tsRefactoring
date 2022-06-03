@@ -71,7 +71,6 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
                             if (Util.isNumber(objectArguments.toString())) {
                                 magicCount++;
                                 numberLine = n.getBegin().get().line;
-                               
                             }
                         }
                     }
