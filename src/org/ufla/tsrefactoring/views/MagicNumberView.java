@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.enums.TestSmell;
-import org.ufla.tsrefactoring.provider.ResourceOptimismProvider;
+import org.ufla.tsrefactoring.provider.MagicNumberProvider;
 
 public class MagicNumberView extends ViewPart {
 
@@ -47,7 +47,7 @@ public class MagicNumberView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		// Provider the data
-		viewer.setContentProvider(new ResourceOptimismProvider());
+		viewer.setContentProvider(new MagicNumberProvider());
 
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
