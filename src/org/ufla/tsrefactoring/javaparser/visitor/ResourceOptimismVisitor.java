@@ -1,9 +1,10 @@
 package org.ufla.tsrefactoring.javaparser.visitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.util.Util;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -14,8 +15,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-import org.ufla.tsrefactoring.util.Util;
-
 public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 
 	private MethodDeclaration currentMethod = null;
@@ -23,7 +22,7 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 	private int numberLine = 0;
 	private List<String> methodVariables = new ArrayList<>();
 	private List<String> classVariables = new ArrayList<>();
-	private Map<String, Integer> methods = new HashMap<String, Integer>();
+	private List<ResultTestSmellDTO> methods = new ArrayList<ResultTestSmellDTO>();
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
@@ -34,7 +33,8 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 
 			if (hasSmell && methodVariables.size() > 0) {
 				//this.methods.put(n.getNameAsString(), n.getBegin().get().line);
-				this.methods.put(n.getNameAsString(), this.numberLine);
+				this.methods.add(new ResultTestSmellDTO(
+						n.getNameAsString(), numberLine));
 			}
 
 			// reset values for next method
@@ -117,13 +117,9 @@ public class ResourceOptimismVisitor extends VoidVisitorAdapter<Void> {
 		}
 	}
 
-	// GETS E SETS
-	public Map<String, Integer> getMethods() {
+	// GET
+	public List<ResultTestSmellDTO> getMethods() {
 		return methods;
-	}
-
-	public void setMethods(Map<String, Integer> methods) {
-		this.methods = methods;
 	}
 
 }

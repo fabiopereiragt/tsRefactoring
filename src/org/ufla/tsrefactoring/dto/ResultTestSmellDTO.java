@@ -5,6 +5,12 @@ public class ResultTestSmellDTO {
 	private int lineNumber;
 	private String filePath;
 
+	public ResultTestSmellDTO(String methodName, int lineNumber) {
+		super();
+		this.methodName = methodName;
+		this.lineNumber = lineNumber;
+	}
+
 	public ResultTestSmellDTO(String methodName, int lineNumber, String filePath) {
 		super();
 		this.methodName = methodName;

@@ -1,16 +1,17 @@
 package org.ufla.tsrefactoring.javaparser.visitor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
+import org.ufla.tsrefactoring.util.Util;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-import org.ufla.tsrefactoring.util.Util;
-
 public class EmptyTestVisitor extends VoidVisitorAdapter<Void> {
 
-	private Map<String, Integer> methods = new HashMap<String, Integer>();
+	private List<ResultTestSmellDTO> methods = new ArrayList<ResultTestSmellDTO>();
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
@@ -19,19 +20,17 @@ public class EmptyTestVisitor extends VoidVisitorAdapter<Void> {
 				if (n.getBody().isPresent()) {
 					// get the total number of statements contained in the method
 					if (n.getBody().get().getStatements().size() == 0) {
-						this.methods.put(n.getNameAsString(), n.getBegin().get().line);
+						//add(n.getNameAsString(), n.getBegin().get().line);
+						this.methods.add(new ResultTestSmellDTO(
+								n.getNameAsString(), n.getBegin().get().line));
 					}
 				}
 			}
 		}
 	}
 
-	// GETS E SETS
-	public Map<String, Integer> getMethods() {
+	// GET
+	public List<ResultTestSmellDTO> getMethods() {
 		return methods;
-	}
-
-	public void setMethods(Map<String, Integer> methods) {
-		this.methods = methods;
 	}
 }

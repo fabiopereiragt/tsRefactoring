@@ -1,8 +1,9 @@
 package org.ufla.tsrefactoring.javaparser.visitor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.util.Util;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -14,9 +15,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
 
 	private MethodDeclaration currentMethod = null;
-	private int magicCount = 0;
-	private int numberLine = 0;
-	private Map<String, Integer> methods = new HashMap<String, Integer>();
+	private List<ResultTestSmellDTO> methods = new ArrayList<ResultTestSmellDTO>();
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
@@ -31,7 +30,6 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
 */
 			//reset values for next method
             currentMethod = null;
-            magicCount = 0;
 		}
 
 	}
@@ -53,27 +51,30 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
                 for (Expression argument : n.getArguments()) {
                     // if the argument is a number
                     if (Util.isNumber(argument.toString())) {
-                        magicCount++;
-                        numberLine = argument.getBegin().get().line;
-                        this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
+                    	 this.methods.add(
+                         		new ResultTestSmellDTO(
+                         		currentMethod.getNameAsString(), 
+                         		argument.getBegin().get().line));	
                     }
                     // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
                     else if (argument instanceof ObjectCreationExpr) {
                         for (Expression objectArguments : ((ObjectCreationExpr) argument).getArguments()) {
                             if (Util.isNumber(objectArguments.toString())) {
-                                magicCount++;
-                                numberLine = argument.getBegin().get().line;
-                                this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
+                            	 this.methods.add(
+                                 		new ResultTestSmellDTO(
+                                 		currentMethod.getNameAsString(), 
+                                 		argument.getBegin().get().line));	
                             }
                         }
                     }
                     // if the argument contains an MethodCallExpr (e.g. assertEquals(someMethod(2),...)
                     else if (argument instanceof MethodCallExpr) {
                         for (Expression objectArguments : ((MethodCallExpr) argument).getArguments()) {
-                            if (Util.isNumber(objectArguments.toString())) {
-                                magicCount++;
-                                numberLine = argument.getBegin().get().line;
-                                this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
+                            if (Util.isNumber(objectArguments.toString())) {                                                               
+                                this.methods.add(
+                                		new ResultTestSmellDTO(
+                                		currentMethod.getNameAsString(), 
+                                		argument.getBegin().get().line));                       
                             }
                         }
                     }
@@ -82,13 +83,9 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
         }
     }
 
-	// GETS E SETS
-	public Map<String, Integer> getMethods() {
-		return methods;
-	}
-
-	public void setMethods(Map<String, Integer> methods) {
-		this.methods = methods;
-	}
+ // GET
+ 	public List<ResultTestSmellDTO> getMethods() {
+ 		return methods;
+ 	}
 
 }

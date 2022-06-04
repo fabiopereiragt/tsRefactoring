@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ufla.tsrefactoring.dto.ClassDataDTO;
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.javaparser.visitor.ConstructorInitializationVisitor;
 import org.ufla.tsrefactoring.javaparser.visitor.EmptyTestVisitor;
@@ -19,7 +19,7 @@ import org.ufla.tsrefactoring.util.DirExplorer;
 
 public class Parser {
 
-	private static List<ClassDataDTO> allClassData = new ArrayList<ClassDataDTO>();
+	private static List<ResultTestSmellDTO> allClassData = new ArrayList<ResultTestSmellDTO>();
 
 	public static void listClasses(File projectDir, TestSmell testSmell) {
 
@@ -30,39 +30,27 @@ public class Parser {
 				if (testSmell == TestSmell.EMPTY_TEST) {
 					EmptyTestVisitor v = new EmptyTestVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(), 
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				} else if (testSmell == TestSmell.IGNORED_TEST) {
 					IgnoredTestVisitor v = new IgnoredTestVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				} else if (testSmell == TestSmell.REDUNDANT_PRINT) {
 					RedundantPrintVisitor v = new RedundantPrintVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				} else if (testSmell == TestSmell.RESOURCE_OPTIMISM) {
 					ResourceOptimismVisitor v = new ResourceOptimismVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				} else if (testSmell == TestSmell.MAGIC_NUMBER) {
 					MagicNumberVisitor v = new MagicNumberVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				} else {
 					ConstructorInitializationVisitor v = new ConstructorInitializationVisitor();
 					v.visit(cu, null);
-					ClassDataDTO classData = new ClassDataDTO(v.getMethods(),
-							projectDir.toString().concat(path));
-					insert(classData);
+					insert(v.getMethods(), projectDir.toString().concat(path));
 				}
 			} catch (IOException e) {
 				new RuntimeException(e);
@@ -70,11 +58,17 @@ public class Parser {
 		}).explore(projectDir);
 	}
 
-	private static void insert(ClassDataDTO cl) {
-		allClassData.add(cl);
+	private static void insert(List<ResultTestSmellDTO> listResult, String path) {
+		listResult.forEach(item -> {			
+			allClassData.add(
+					new ResultTestSmellDTO(
+							item.getMethodName(), 
+							item.getLineNumber(),
+							path));
+		});
 	}
 
-	public static List<ClassDataDTO> getAllClassData() {
+	public static List<ResultTestSmellDTO> getAllClassData() {
 		return allClassData;
 	}
 

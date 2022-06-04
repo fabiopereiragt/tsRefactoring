@@ -1,7 +1,9 @@
 package org.ufla.tsrefactoring.javaparser.visitor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -9,22 +11,19 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class IgnoredTestVisitor extends VoidVisitorAdapter<Void> {
 
-	private Map<String, Integer> methods = new HashMap<String, Integer>();
+	private List<ResultTestSmellDTO> methods = new ArrayList<ResultTestSmellDTO>();
 
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
 		if (n.getAnnotationByName("Ignore").isPresent() || n.getAnnotationByName("Disabled").isPresent()) {
-			this.methods.put(n.getNameAsString(), n.getBegin().get().line);
+			this.methods.add(new ResultTestSmellDTO(
+					n.getNameAsString(), n.getBegin().get().line));
 		}
 
 	}
 
-	// GETS E SETS
-	public Map<String, Integer> getMethods() {
-		return methods;
-	}
-
-	public void setMethods(Map<String, Integer> methods) {
-		this.methods = methods;
-	}
+	// GET
+		public List<ResultTestSmellDTO> getMethods() {
+			return methods;
+		}
 }
