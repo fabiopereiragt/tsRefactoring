@@ -25,10 +25,10 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
 
 			super.visit(n, arg);
 
-			if (magicCount >= 1) {
+		/*	if (magicCount >= 1) {
 				this.methods.put(n.getNameAsString(), this.numberLine);				
 			}
-
+*/
 			//reset values for next method
             currentMethod = null;
             magicCount = 0;
@@ -54,14 +54,16 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
                     // if the argument is a number
                     if (Util.isNumber(argument.toString())) {
                         magicCount++;
-                        numberLine = n.getBegin().get().line;
+                        numberLine = argument.getBegin().get().line;
+                        this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
                     }
                     // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
                     else if (argument instanceof ObjectCreationExpr) {
                         for (Expression objectArguments : ((ObjectCreationExpr) argument).getArguments()) {
                             if (Util.isNumber(objectArguments.toString())) {
                                 magicCount++;
-                                numberLine = n.getBegin().get().line;
+                                numberLine = argument.getBegin().get().line;
+                                this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
                             }
                         }
                     }
@@ -70,7 +72,8 @@ public class MagicNumberVisitor extends VoidVisitorAdapter<Void> {
                         for (Expression objectArguments : ((MethodCallExpr) argument).getArguments()) {
                             if (Util.isNumber(objectArguments.toString())) {
                                 magicCount++;
-                                numberLine = n.getBegin().get().line;
+                                numberLine = argument.getBegin().get().line;
+                                this.methods.put(currentMethod.getNameAsString(), this.numberLine);	
                             }
                         }
                     }

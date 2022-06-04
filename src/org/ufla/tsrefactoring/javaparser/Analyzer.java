@@ -22,7 +22,7 @@ public class Analyzer {
 			Parser.getAllClassData().forEach(allClass -> {
 				// iterate over a map using for
 				for (var pair : allClass.getSourceMethod().entrySet()) {
-					// System.out.println(pair.getKey()); System.out.println(pair.getValue());
+					// System.out.println(pair.getKey()); System .out.println(pair.getValue());
 					resultEmptyTest
 							.add(new ResultTestSmellDTO(
 									pair.getKey(), 
