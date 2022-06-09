@@ -19,6 +19,7 @@ import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.refactoring.ConstructorInitializationRefactoring;
 import org.ufla.tsrefactoring.refactoring.EmptyTestRefactoring;
 import org.ufla.tsrefactoring.refactoring.IgnoredTestRefactoring;
+import org.ufla.tsrefactoring.refactoring.MagicNumberRefactoring;
 import org.ufla.tsrefactoring.refactoring.RedundantPrintRefactoring;
 import org.ufla.tsrefactoring.refactoring.ResourceOptimismRefactoring;
 
@@ -82,6 +83,16 @@ public class UtilView {
 						showMessage("Refactoring",
 								"Successfully refactored. Open the file again to view the refactoring.", viewer);
 					}
+					break;
+				case MAGIC_NUMBER:
+					if (MagicNumberRefactoring.executeRefactory(rs)) {
+						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
+						viewer.remove(rs);
+						showMessage("Refactoring",
+								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+					}
+					break;
+				default:
 					break;
 				}
 			} catch (FileNotFoundException | CoreException e) {

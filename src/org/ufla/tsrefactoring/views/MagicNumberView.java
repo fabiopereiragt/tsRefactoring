@@ -119,7 +119,7 @@ public class MagicNumberView extends ViewPart {
 			public void run() {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				UtilView.executeRefactor(selection, rs, viewer, TestSmell.RESOURCE_OPTIMISM);
+				UtilView.executeRefactor(selection, rs, viewer, TestSmell.MAGIC_NUMBER);
 			}
 		};
 		refactoring.setText("Refactor");
