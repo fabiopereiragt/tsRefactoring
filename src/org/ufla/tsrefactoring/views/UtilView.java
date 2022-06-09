@@ -48,48 +48,42 @@ public class UtilView {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						// Remove the item on the table list
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored.", viewer);
 					}
 					break;
 				case IGNORED_TEST:
 					if (IgnoredTestRefactoring.executeRefactory(rs)) {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored. ", viewer);
 					}
 					break;
 				case CONSTRUCTOR_INITIALIZATION:
 					if (ConstructorInitializationRefactoring.executeRefactory(rs)) {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored.", viewer);
 					}
 					break;
 				case REDUNDANT_PRINT:
 					if (RedundantPrintRefactoring.executeRefactory(rs)) {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored.", viewer);
 					}
 					break;
 				case RESOURCE_OPTIMISM:
 					if (ResourceOptimismRefactoring.executeRefactory(rs)) {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored.", viewer);
 					}
 					break;
 				case MAGIC_NUMBER:
 					if (MagicNumberRefactoring.executeRefactory(rs)) {
 						UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 						viewer.remove(rs);
-						showMessage("Refactoring",
-								"Successfully refactored. Open the file again to view the refactoring.", viewer);
+						showMessage("Refactoring", "Successfully refactored.", viewer);
 					}
 					break;
 				default:

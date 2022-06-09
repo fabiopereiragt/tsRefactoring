@@ -26,8 +26,6 @@ import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 import org.ufla.tsrefactoring.enums.TestSmell;
 import org.ufla.tsrefactoring.provider.EmptyTestProvider;
 
-
-
 public class EmptyTestView extends ViewPart {
 
 	/**
@@ -49,7 +47,7 @@ public class EmptyTestView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		viewer.setContentProvider(new EmptyTestProvider());
-		
+
 		TableViewerColumn colTestSmell = new TableViewerColumn(viewer, SWT.NONE);
 		colTestSmell.getColumn().setWidth(200);
 		colTestSmell.getColumn().setText("Source Method");
@@ -121,57 +119,26 @@ public class EmptyTestView extends ViewPart {
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				// Object obj = selection.getFirstElement();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
-				
 				UtilView.executeRefactor(selection, rs, viewer, TestSmell.EMPTY_TEST);
-				
-			/*	if (showQuestionMessage(rs.getMethodName())) {
-					try {
-						if (EmptyTestRefactoring.executeRefactory(rs)) {
-							//Open the file again
-							UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
-							// Remove the item on the table list
-							viewer.remove(rs);
-							showMessage("Refactoring",
-									"Successfully refactored. Open the file again to view the refactoring.");
-						}
 
-					} catch (FileNotFoundException | CoreException e) {
-						e.printStackTrace();
-					}
-				}*/
 			}
 		};
 		refactoring.setText("Refactor");
 		refactoring.setToolTipText("Refactor the test smell");
 		refactoring.setImageDescriptor(
-			PlatformUI.getWorkbench().getSharedImages()
-			.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK)
-		);
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
-		//Open the file in the test smell location
+		// Open the file in the test smell location
 		doubleClickAction = new Action() {
 			public void run() {
-				/* 
-				 * //Open the file in the eclipse editor
-				 * 
-				 * File file = new File(filePath); URI location = file.toURI(); IFile[] files =
-				 * ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(location);
-				 * IFile sourceFile = files[0]; IJavaElement sourceJavaElement =
-				 * JavaCore.create(sourceFile); try { JavaUI.openInEditor(sourceJavaElement, );
-				 * 
-				 * } catch (PartInitException e1) { // TODO Auto-generated catch block
-				 * e1.printStackTrace(); } catch (JavaModelException e1) { // TODO
-				 * Auto-generated catch block e1.printStackTrace(); }
-				 * 
-				 * }
-				 */
+
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				ResultTestSmellDTO rs = (ResultTestSmellDTO) selection.getFirstElement();
 				try {
 					UtilView.openFile(rs.getFilePath(), rs.getLineNumber());
 				} catch (CoreException e1) {
 					e1.printStackTrace();
-				}			
+				}
 			}
 		};
 	}
@@ -183,17 +150,6 @@ public class EmptyTestView extends ViewPart {
 			}
 		});
 	}
-	
-	/*
-	private boolean showQuestionMessage(String message) {
-		return MessageDialog.openQuestion(viewer.getControl().getShell(), "Question",
-				"ATTENTION: this operation cannot be undone."
-						+ "\nDo you really want to apply refactoring in this method: " + message + "?");
-	}
-
-	private void showMessage(String title, String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(), title, message);
-	}*/
 
 	@Override
 	public void setFocus() {

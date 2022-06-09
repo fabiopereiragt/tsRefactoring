@@ -2,6 +2,8 @@ package org.ufla.tsrefactoring.refactoring;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.ufla.tsrefactoring.dto.ResultTestSmellDTO;
 
@@ -69,8 +71,16 @@ public class MagicNumberRefactoring {
 			}
 
 		}, null);
-		System.out.println(cu.toString());
+		try {
+			// The second parameter says to append the file.
+			// False, the file will be cleared before writing
+			FileWriter fw = new FileWriter(file, false);
+			fw.write(cu.toString());
+			fw.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return false;
-
 	}
 }
